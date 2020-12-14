@@ -1,11 +1,11 @@
 <?php
 
-namespace PartechGSS\Mongo\Tests;
+namespace PartechGSS\Tests;
 
 use \MongoDB\Client;
 use \PartechGSS\Mongo\Connection;
 
-class MongoConnectionTest extends \TestCase
+class MongoConnectionTest extends TestCase
 {
     private $client;
     private $config;
@@ -14,7 +14,7 @@ class MongoConnectionTest extends \TestCase
     {
         parent::setUp();
         $this->config = config('database.connections.mongodb');
-        $this->client = new Client($this->config['dsn'], (array)@$this->config['options'], (array)@$this->config['driver_options']);
+        $this->client = new Client($this->config['dsn'], (array)@$this->config['options'],(array)@$this->config['driver_options']);
     }
 
     public function testCanGetCursorForAggregateJson()

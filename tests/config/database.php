@@ -11,19 +11,9 @@ return [
             'name' => 'mongodb',
             'driver' => 'mongodb',
             'host' => $mongoHost,
-            'database' => env('MONGO_DATABASE', 'unittest'),
-        ],
-
-        'dsn_mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => "mongodb://$mongoHost:$mongoPort",
-            'database' => env('MONGO_DATABASE', 'unittest'),
-        ],
-
-        'dsn_mongodb_db' => [
-            'driver' => 'mongodb',
-            'dsn' => "mongodb://$mongoHost:$mongoPort/" . env('MONGO_DATABASE', 'unittest'),
-        ],
+            'database' => env('MONGO_DATABASE', 'testing'),
+            'dsn' => 'mongodb://mongo:27017/testing',
+        ]
 
     ],
 

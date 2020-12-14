@@ -1,11 +1,12 @@
 <?php
 
-namespace PartechGSS\Mongo\Tests;
+namespace PartechGSS\Tests;
 
+use \MongoDB\Client;
 use \PartechGSS\Mongo\Connection;
 use \PartechGSS\Mongo\Aggregate\Builder;
 
-class MongoAggregateBuilderTest extends \TestCase
+class MongoAggregateBuilderTest extends TestCase
 {
     public $builder;
     protected $client;
@@ -14,11 +15,8 @@ class MongoAggregateBuilderTest extends \TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->config = [
-            'driver' => 'mongodb',
-            'dsn' => 'mongodb://127.0.0.1/',
-            'database' => 'collection_name'
-        ];
+        $this->config = config('database.connections.mongodb');
+        $this->client = new Client($this->config['dsn'], (array)@$this->config['options'],(array)@$this->config['driver_options']);
         $this->builder = new Builder('device_events', new Connection($this->client, $this->config['database'], '', $this->config));
     }
 

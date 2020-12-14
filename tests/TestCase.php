@@ -1,7 +1,11 @@
 <?php
+namespace PartechGSS\Tests;
 
-class TestCase extends Orchestra\Testbench\TestCase
+class TestCase extends \Orchestra\Testbench\TestCase
 {
+    /**
+     * @inheritDoc
+     */
     /**
      * Define environment setup.
      * @param Illuminate\Foundation\Application $app
@@ -14,9 +18,5 @@ class TestCase extends Orchestra\Testbench\TestCase
         $app['config']->set('app.key', 'NaRflEyUJ5FsKp9lMwv4tC4Nn0NQilM7');
         $app['config']->set('database.default', 'mongodb');
         $app['config']->set('database.connections.mongodb', $config['connections']['mongodb']);
-        $app['config']->set('database.connections.dsn_mongodb', $config['connections']['dsn_mongodb']);
-        //$app['config']->set('database.connections.dsn_mongodb_db', $config['connections']['dsn_mongodb_db']);
-
-        $app['config']->set('cache.driver', 'array');
     }
 }
