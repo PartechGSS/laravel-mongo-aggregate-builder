@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  testing:
+    container_name: testing
+    image: lmab-tests
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true  #docker run -i
+    tty: true         #docker run -t
+    volumes:
+      - .:/code
+    working_dir: /code
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - 27017:27017
+    logging:
+      driver: none
