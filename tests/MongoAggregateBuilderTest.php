@@ -1,10 +1,8 @@
 <?php
 
-namespace PartechGSS\Tests;
-
-use \MongoDB\Client;
-use \PartechGSS\Mongo\Connection;
-use \PartechGSS\Mongo\Aggregate\Builder;
+use MongoDB\Client;
+use PartechGSS\MongoDB\Connection;
+use PartechGSS\MongoDB\Aggregate\Builder;
 
 class MongoAggregateBuilderTest extends TestCase
 {
@@ -18,6 +16,13 @@ class MongoAggregateBuilderTest extends TestCase
         $this->config = config('database.connections.mongodb');
         $this->client = new Client($this->config['dsn'], (array)@$this->config['options'],(array)@$this->config['driver_options']);
         $this->builder = new Builder('device_events', new Connection($this->client, $this->config['database'], '', $this->config));
+    }
+
+    public function testCanUseModelConnection()
+    {
+        $bfast = PartechGSS\Tests\Models\Breakfast::make();
+        $builder = new Builder($bfast->getTable(), new Connection($bfast->getConnection()->getMongoClient(), $this->config['database'], null, []));
+        $this->assertNotEmpty($builder->getCollection());
     }
 
     public function testCanAddMatchAndProject()

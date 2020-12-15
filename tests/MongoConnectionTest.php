@@ -1,9 +1,7 @@
 <?php
 
-namespace PartechGSS\Tests;
-
-use \MongoDB\Client;
-use \PartechGSS\Mongo\Connection;
+use MongoDB\Client;
+use PartechGSS\MongoDB\Connection;
 
 class MongoConnectionTest extends TestCase
 {

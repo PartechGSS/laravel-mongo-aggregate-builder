@@ -1,11 +1,10 @@
 <?php
 
-namespace PartechGSS\Mongo;
+namespace PartechGSS\MongoDB;
 
-use \Illuminate\Database\Connection as BaseConnection;
 use \MongoDB\Client;
 
-class Connection extends BaseConnection
+class Connection extends \Illuminate\Database\Connection
 {
     /**
      * @var \MongoDB\Client
@@ -16,7 +15,7 @@ class Connection extends BaseConnection
      * @var \MongoDB\Collection
      */
     protected $collection;
-    protected $collectionName;
+    protected $collection_name;
 
     /**
      * @var \MongoDB\Database
@@ -38,7 +37,7 @@ class Connection extends BaseConnection
     public function __construct(Client $client, $database, $collectionName = '', array $config = [])
     {
         $this->client = $client;
-        $this->collectionName = $collectionName;
+        $this->collection_name = $collectionName;
         $this->config = $config;
         $this->database = $database;
         $this->typeMap = [];
@@ -53,8 +52,8 @@ class Connection extends BaseConnection
      */
     public function selectCollection($name = '')
     {
-        $this->collectionName = $name ?: $this->collectionName;
-        $this->collection = $this->db->selectCollection($this->collectionName);
+        $this->collection_name = $name ?: $this->collection_name;
+        $this->collection = $this->db->selectCollection($this->collection_name);
         return $this->collection;
     }
 
