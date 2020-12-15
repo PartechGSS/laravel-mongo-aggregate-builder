@@ -1,11 +1,10 @@
 <?php
 
-namespace PartechGSS\Mongo;
+namespace PartechGSS\MongoDB;
 
-use \Illuminate\Database\Connection as BaseConnection;
 use \MongoDB\Client;
 
-class Connection extends BaseConnection
+class Connection extends \Illuminate\Database\Connection
 {
     /**
      * @var \MongoDB\Client

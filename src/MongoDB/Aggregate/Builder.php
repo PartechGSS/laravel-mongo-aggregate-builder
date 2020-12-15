@@ -1,10 +1,10 @@
 <?php
 
-namespace PartechGSS\Mongo\Aggregate;
+namespace PartechGSS\MongoDB\Aggregate;
 
 use \Illuminate\Support\LazyCollection;
+use \PartechGSS\MongoDB\Connection;
 use \MongoDB\Collection;
-use \PartechGSS\Mongo\Connection;
 
 class Builder
 {
