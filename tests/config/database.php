@@ -12,7 +12,7 @@ return [
             'driver' => 'mongodb',
             'host' => $mongoHost,
             'database' => env('MONGO_DATABASE', 'testing'),
-            'dsn' => 'mongodb://mongo:27017/testing',
+            'dsn' => 'mongodb://mongodb:27017/testing',
         ]
 
     ],

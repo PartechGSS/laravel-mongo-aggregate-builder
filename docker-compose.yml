@@ -17,6 +17,9 @@ services:
   mongodb:
     container_name: mongodb
     image: mongo
+    environment:
+      - MONGODB_USER="testing-user"
+      - MONGODB_PASS="testing-pass"
     ports:
       - 27017:27017
     logging:
