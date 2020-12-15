@@ -2,11 +2,9 @@
 
 namespace PartechGSS\Tests\Models;
 
-use PartechGSS\Traits\AggregateBuilder;
+use PartechGSS\MongoDB\Eloquent\Model;
 
-class Breakfast extends \Illuminate\Database\Eloquent\Model
+class Breakfast extends Model
 {
-    use AggregateBuilder;
 
-    protected $connection = 'mongodb';
 }

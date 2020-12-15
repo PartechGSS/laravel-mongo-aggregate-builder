@@ -1,10 +1,8 @@
 <?php
 
-namespace PartechGSS\Tests;
-
-use \MongoDB\Client;
-use \PartechGSS\MongoDB\Connection;
-use \PartechGSS\MongoDB\Aggregate\Builder;
+use MongoDB\Client;
+use PartechGSS\MongoDB\Connection;
+use PartechGSS\MongoDB\Aggregate\Builder;
 
 class MongoAggregateBuilderTest extends TestCase
 {
@@ -22,8 +20,8 @@ class MongoAggregateBuilderTest extends TestCase
 
     public function testCanUseModelConnection()
     {
-        $ts = Models\Breakfast::make();
-        $builder = new Builder($ts->getTable(), new Connection($ts->getConnection()->getMongoClient(), $this->config['database'], null, []));
+        $bfast = PartechGSS\Tests\Models\Breakfast::make();
+        $builder = new Builder($bfast->getTable(), new Connection($bfast->getConnection()->getMongoClient(), $this->config['database'], null, []));
         $this->assertNotEmpty($builder->getCollection());
     }
 

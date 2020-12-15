@@ -12,8 +12,7 @@ class ConnectionServiceProvider extends \Illuminate\Support\ServiceProvider
         // Add database driver.
         $this->app->resolving('db', function ($db) {
             $db->extend('mongodb', function ($config, $name) {
-                $config['name'] = $name;
-                return new Connection($config);
+                return new Connection(new \MongoDB\Client($config['dsn'], (array)@$config['options'],(array)@$config['driver_options']), $config['database'], @$config['collection'], $config);
             });
         });
 
@@ -24,6 +23,6 @@ class ConnectionServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function boot()
     {
-        \Illumniate\Database\Eloquent\Model::setConnectionResolver($this->app['db']);
+        \Illuminate\Database\Eloquent\Model::setConnectionResolver($this->app['db']);
     }
 }
