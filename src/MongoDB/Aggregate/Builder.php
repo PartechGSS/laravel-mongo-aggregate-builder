@@ -57,10 +57,11 @@ class Builder
     }
 
     /**
-     * Concat an array of stages to the end of the existing pipeline
+     * Concat an array of stages to the end of the existing pipeline,
+     * will ignore any stages not supported by the builder
      * @param array $stages
      */
-    public function addStages(array $stages)
+    public function addStages(Iterable $stages)
     {
         // We don't want to array_merge, we want to go through and add each stage per our builder. We don't know where these came from.
         foreach ($stages as $stage) {
@@ -73,34 +74,77 @@ class Builder
         }
     }
 
-    public function match(array $stage)
+    /**
+     * @param array $stage - [<query>]
+     * @return Builder
+     */
+    public function match(Iterable $stage): Builder
     {
         $this->pipeline[] = ['$match' => $stage];
         return $this;
     }
 
-    public function group(array $stage)
+    /**
+     * @param array $stage -
+     *  [
+     *      id => <expression>, // Group By Expression
+     *      <field1> => [ <accumulator1> => <expression1> ],
+     *      ...
+     *   ]
+     * @return Builder
+     */
+    public function group(Iterable $stage): Builder
     {
         $this->pipeline[] = ['$group' => $stage];
         return $this;
     }
 
-    public function project(array $stage)
+    /**
+     * @param array $stage - [<specification(s)>]
+     * @return Builder
+     */
+    public function project(Iterable $stage): Builder
     {
-        $this->pipeline[] = ['$project' => $stage]; // TODO: add 'last projection' search function?
+        $this->pipeline[] = ['$project' => $stage];
         return $this;
     }
 
-    public function set(array $stage)
+    /**
+     * @param array $stage -
+     *  [
+     *      <newField>: <expression>,
+     *      ...
+     *  ]
+     * @return Builder
+     */
+    public function set(Iterable $stage): Builder
     {
         $this->pipeline[] = ['$set' => $stage];
+        return $this;
+    }
+
+    /**
+     * @param string|array $stage
+     *  string -
+     *      <field path>
+     *  array -
+     *      [
+     *          path => <field path>,
+     *          includeArrayIndex => <string>,
+     *          preserveNullAndEmptyArrays => <boolean>
+     *      ]
+     *
+     * @return Builder
+     */
+    public function unwind($stage): Builder
+    {
+        $this->pipeline[] = ['$unwind' => $stage];
         return $this;
     }
 
     // TODO: Other aggregate pipeline stages
 
     /**
-     * @param array $options
      * @return LazyCollection
      */
     public function cursor()
