@@ -14,7 +14,7 @@ class MongoAggregateBuilderTest extends TestCase
     {
         parent::setUp();
         $this->config = config('database.connections.mongodb');
-        $this->client = new Client($this->config['dsn'], (array)@$this->config['options'],(array)@$this->config['driver_options']);
+        $this->client = new Client($this->config['dsn'], (array)@$this->config['options'], (array)@$this->config['driver_options']);
         $this->builder = new Builder('device_events', new Connection($this->client, $this->config['database'], '', $this->config));
     }
 
@@ -66,6 +66,23 @@ class MongoAggregateBuilderTest extends TestCase
                 ]
             ]
         ],
+            $this->builder->getPipeline()
+        );
+    }
+
+    public function testCanAddUnwindWithString()
+    {
+        $unwind = '$keys';
+        $this->builder->unwind($unwind);
+        $this->assertEquals([['$unwind' => $unwind]],
+            $this->builder->getPipeline());
+    }
+
+    public function testCanAddUnwindWithArray()
+    {
+        $unwind = ['path' => '$keys', 'includeArrayIndex' => 'whatever_index', 'preserveNullAndEmptyArrays' => false];
+        $this->builder->unwind($unwind);
+        $this->assertEquals([['$unwind' => $unwind]],
             $this->builder->getPipeline()
         );
     }
