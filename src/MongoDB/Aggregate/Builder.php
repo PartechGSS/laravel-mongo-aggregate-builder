@@ -75,7 +75,7 @@ class Builder
     }
 
     /**
-     * @param array $stage - [<query>]
+     * @param array $stage - [ $queryArray ]
      * @return Builder
      */
     public function match(Iterable $stage): Builder
@@ -87,8 +87,8 @@ class Builder
     /**
      * @param array $stage -
      *  [
-     *      id => <expression>, // Group By Expression
-     *      <field1> => [ <accumulator1> => <expression1> ],
+     *      $id => $expression, // Group By Expression
+     *      $field1 => [ $accumulator1 => $expression ],
      *      ...
      *   ]
      * @return Builder
@@ -100,7 +100,7 @@ class Builder
     }
 
     /**
-     * @param array $stage - [<specification(s)>]
+     * @param array $stage - [ $specifications ]
      * @return Builder
      */
     public function project(Iterable $stage): Builder
@@ -112,7 +112,7 @@ class Builder
     /**
      * @param array $stage -
      *  [
-     *      <newField>: <expression>,
+     *      $newField> => $expression,
      *      ...
      *  ]
      * @return Builder
@@ -126,12 +126,12 @@ class Builder
     /**
      * @param string|array $stage
      *  string -
-     *      <field path>
+     *      $field_path
      *  array -
      *      [
-     *          path => <field path>,
-     *          includeArrayIndex => <string>,
-     *          preserveNullAndEmptyArrays => <boolean>
+     *          'path' => $field_path,
+     *          'includeArrayIndex' => $index_string,
+     *          'preserveNullAndEmptyArrays' => boolean
      *      ]
      *
      * @return Builder
