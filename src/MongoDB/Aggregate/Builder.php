@@ -49,7 +49,7 @@ class Builder
 
     /**
      * Set option configuration to be used during pipeline execution
-     * @param array $options - ['allowDiskUse' = true]
+     * @param array $options - <code>['allowDiskUse' = boolean]<code>
      */
     public function setOptions($options = [])
     {
@@ -75,7 +75,7 @@ class Builder
     }
 
     /**
-     * @param array $stage - [ $queryArray ]
+     * @param array $stage - <code>[ $query_array ]</code>
      * @return Builder
      */
     public function match(Iterable $stage): Builder
@@ -85,12 +85,13 @@ class Builder
     }
 
     /**
-     * @param array $stage -
+     * @param array $stage - <code>
      *  [
      *      $id => $expression, // Group By Expression
      *      $field1 => [ $accumulator1 => $expression ],
      *      ...
      *   ]
+     * </code>
      * @return Builder
      */
     public function group(Iterable $stage): Builder
@@ -100,7 +101,7 @@ class Builder
     }
 
     /**
-     * @param array $stage - [ $specifications ]
+     * @param array $stage - <code>[ $projection_specifications ]</code>
      * @return Builder
      */
     public function project(Iterable $stage): Builder
@@ -110,11 +111,12 @@ class Builder
     }
 
     /**
-     * @param array $stage -
+     * @param array $stage - <code>
      *  [
      *      $newField> => $expression,
      *      ...
      *  ]
+     * </code>
      * @return Builder
      */
     public function set(Iterable $stage): Builder
@@ -125,15 +127,15 @@ class Builder
 
     /**
      * @param string|array $stage
-     *  string -
-     *      $field_path
-     *  array -
+     *  as string - <code>
+     *          $field_path</code>
+     *  as array - <code>
      *      [
      *          'path' => $field_path,
      *          'includeArrayIndex' => $index_string,
      *          'preserveNullAndEmptyArrays' => boolean
      *      ]
-     *
+     * </code>
      * @return Builder
      */
     public function unwind($stage): Builder
