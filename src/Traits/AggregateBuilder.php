@@ -5,8 +5,8 @@ namespace PartechGSS\Traits;
 
 use \Illuminate\Support\Arr;
 use \MongoDB\Client;
-use \PartechGSS\Mongo\Aggregate\Builder as MongoAggregateBuilder;
-use \PartechGSS\Mongo\Connection;
+use \PartechGSS\MongoDB\Aggregate\Builder as MongoAggregateBuilder;
+use \PartechGSS\MongoDB\Connection;
 use \InvalidArgumentException;
 
 trait AggregateBuilder
