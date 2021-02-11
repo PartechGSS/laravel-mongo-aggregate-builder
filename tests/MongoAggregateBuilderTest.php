@@ -28,44 +28,46 @@ class MongoAggregateBuilderTest extends TestCase
     public function testCanAddMatchAndProject()
     {
         $this->builder->match(['organization_id' => 1, 'asset_id' => ['$in' => [4, 5, 6]]]);
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                '$match' => [
-                    'organization_id' => 1,
-                    'asset_id' => [
-                        '$in' => [
-                            4,
-                            5,
-                            6,
+                [
+                    '$match' => [
+                        'organization_id' => 1,
+                        'asset_id' => [
+                            '$in' => [
+                                4,
+                                5,
+                                6,
+                            ],
                         ],
-                    ],
+                    ]
                 ]
-            ]
-        ],
+            ],
             $this->builder->getPipeline()
         );
 
         $this->builder->project(['_id' => false, 'asset_id' => true]);
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                '$match' => [
-                    'organization_id' => 1,
-                    'asset_id' => [
-                        '$in' => [
-                            4,
-                            5,
-                            6,
+                [
+                    '$match' => [
+                        'organization_id' => 1,
+                        'asset_id' => [
+                            '$in' => [
+                                4,
+                                5,
+                                6,
+                            ],
                         ],
-                    ],
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => false,
+                        'asset_id' => true,
+                    ]
                 ]
             ],
-            [
-                '$project' => [
-                    '_id' => false,
-                    'asset_id' => true,
-                ]
-            ]
-        ],
             $this->builder->getPipeline()
         );
     }
@@ -74,15 +76,18 @@ class MongoAggregateBuilderTest extends TestCase
     {
         $unwind = '$keys';
         $this->builder->unwind($unwind);
-        $this->assertEquals([['$unwind' => $unwind]],
-            $this->builder->getPipeline());
+        $this->assertEquals(
+            [['$unwind' => $unwind]],
+            $this->builder->getPipeline()
+        );
     }
 
     public function testCanAddUnwindWithArray()
     {
         $unwind = ['path' => '$keys', 'includeArrayIndex' => 'whatever_index', 'preserveNullAndEmptyArrays' => false];
         $this->builder->unwind($unwind);
-        $this->assertEquals([['$unwind' => $unwind]],
+        $this->assertEquals(
+            [['$unwind' => $unwind]],
             $this->builder->getPipeline()
         );
     }
@@ -111,26 +116,27 @@ class MongoAggregateBuilderTest extends TestCase
             ]
         ];
         $this->builder->addStages($stages);
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                '$match' => [
-                    'organization_id' => 1,
-                    'asset_id' => [
-                        '$in' => [
-                            4,
-                            5,
-                            6,
+                [
+                    '$match' => [
+                        'organization_id' => 1,
+                        'asset_id' => [
+                            '$in' => [
+                                4,
+                                5,
+                                6,
+                            ],
                         ],
-                    ],
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => false,
+                        'asset_id' => true,
+                    ]
                 ]
             ],
-            [
-                '$project' => [
-                    '_id' => false,
-                    'asset_id' => true,
-                ]
-            ]
-        ],
             $this->builder->getPipeline()
         );
     }
@@ -168,5 +174,12 @@ class MongoAggregateBuilderTest extends TestCase
             ->project(['_id' => false, 'hats']);
 
         $this->assertInstanceOf(\Illuminate\Support\LazyCollection::class, $this->builder->cursor());
+    }
+
+    public function testCanAddStage(): void
+    {
+        $stage = ["\$replaceRoot" => ["newRoot" => "\$doc"]];
+        $this->builder->addStage($stage);
+        $this->assertEquals($stage, $this->builder->getPipeline()[0]);
     }
 }
