@@ -17,6 +17,11 @@ trait AggregateBuilder
 
     abstract function getConnection();
 
+    public static function builder()
+    {
+        return (new static)->newAggregateBuilder();
+    }
+
     /**
      * @return MongoAggregateBuilder
      */
