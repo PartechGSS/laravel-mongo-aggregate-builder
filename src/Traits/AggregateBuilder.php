@@ -20,6 +20,14 @@ trait AggregateBuilder
     /**
      * @return MongoAggregateBuilder
      */
+    public static function builder(): MongoAggregateBuilder
+    {
+        return (new static)->newAggregateBuilder();
+    }
+
+    /**
+     * @return MongoAggregateBuilder
+     */
     public function newAggregateBuilder(): MongoAggregateBuilder
     {
         $config = config('database.connections.' . $this->getConnectionName());
