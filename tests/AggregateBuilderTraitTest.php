@@ -16,7 +16,7 @@ class AggregateBuilderTraitTest extends TestCase
         $this->assertInstanceOf(Builder::class, $builder);
     }
 
-    public function testStaticBuilderInheretsModel(): void
+    public function testStaticBuilderInheritsModel(): void
     {
         $builder = Breakfast::builder();
         $collection = $builder->getCollection();
