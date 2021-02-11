@@ -57,6 +57,15 @@ class Builder
     }
 
     /**
+     * @param array $stage - a valid PHP mongo pipeline stage
+     * @return Builder
+     */
+    public function addStage(array $stage) {
+        $this->pipeline[] = $stage;
+        return $this;
+    }
+
+    /**
      * Concat an array of stages to the end of the existing pipeline,
      * will ignore any stages not supported by the builder
      * @param array $stages
