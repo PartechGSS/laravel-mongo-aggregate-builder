@@ -102,7 +102,10 @@ class Connection extends \Illuminate\Database\Connection
      */
     public function cursor($aggregate, $bindings = [], $useReadOnly = true)
     {
-        $cursor = $this->collection->aggregate($aggregate['pipeline'], $aggregate['options']);
+        $cursor = $this->collection->aggregate(
+            $aggregate['pipeline'],
+            $aggregate['options'] ?? []
+        );
         $cursor->setTypeMap($this->getTypeMap());
         return $cursor;
     }

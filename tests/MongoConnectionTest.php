@@ -32,7 +32,7 @@ class MongoConnectionTest extends TestCase
     {
         $connection = new Connection($this->client, $this->config['database']);
         $connection->selectCollection('snapshots');
-        $aggregate = ['pipeline' => [['$match' => ['asset_id' => 1]]], 'options' => []];
+        $aggregate = ['pipeline' => [['$match' => ['asset_id' => 1]]]];
         $cursor = $connection->cursor($aggregate);
         $this->assertInstanceOf(\MongoDB\Driver\Cursor::class, $cursor);
     }
@@ -41,7 +41,7 @@ class MongoConnectionTest extends TestCase
     {
         $connection = new Connection($this->client, $this->config['database']);
         $connection->selectCollection('device_events');
-        $aggregate = ['pipeline' => [['$match' => ['asset_id' => 1]]], 'options' => []];
+        $aggregate = ['pipeline' => [['$match' => ['asset_id' => 1]]]];
         $array = $connection->select($aggregate);
         $this->assertIsArray($array);
     }
