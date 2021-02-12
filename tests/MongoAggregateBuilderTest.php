@@ -182,4 +182,23 @@ class MongoAggregateBuilderTest extends TestCase
         $this->builder->addStage($stage);
         $this->assertEquals($stage, $this->builder->getPipeline()[0]);
     }
+
+    public function testToArray(): void
+    {
+        $this->builder
+            ->match(['organization_id' => 1, 'asset_id' => ['$in' => [4, 5, 6]]])
+            ->project(['_id' => false, 'asset_id' => true]);
+        $this->assertIsArray($this->builder->toArray());
+    }
+
+    public function testCanFirstResultsCollection(): void
+    {
+        $this->builder->match(['organization_id' => 1, 'asset_id' => ['$in' => [4, 5, 6]]])->first();
+        $pipeline = $this->builder->getPipeline();
+
+        $this->assertEquals(
+            ['$limit' => 1],
+            $pipeline[count($pipeline) - 1]
+        );
+    }
 }

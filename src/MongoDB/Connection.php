@@ -95,15 +95,17 @@ class Connection extends \Illuminate\Database\Connection
     }
 
     /**
-     * @param string $aggregate - JSON string with 'pipeline' and 'options' keys
+     * @param array $aggregate - array with 'pipeline' and 'options' keys
      * @param array $bindings
      * @param bool $useReadOnly
      * @return \Generator|\Traversable
      */
     public function cursor($aggregate, $bindings = [], $useReadOnly = true)
     {
-        $args = array_merge(['pipeline' => [], 'options' => []], json_decode($aggregate, true));
-        $cursor = $this->collection->aggregate($args['pipeline'], $args['options']);
+        $cursor = $this->collection->aggregate(
+            $aggregate['pipeline'] ?? [],
+            $aggregate['options'] ?? []
+        );
         $cursor->setTypeMap($this->getTypeMap());
         return $cursor;
     }

@@ -8,6 +8,7 @@ use \MongoDB\Collection;
 
 class Builder
 {
+    const TYPE_MAP = ['root' => 'array', 'document' => 'array', 'array' => 'array'];
     protected Collection $collection;
     protected Connection $connection;
     protected array $pipeline;
@@ -27,6 +28,14 @@ class Builder
     public function getCollection()
     {
         return $this->collection;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getConnection()
+    {
+        return $this->connection;
     }
 
     /**
@@ -60,7 +69,8 @@ class Builder
      * @param array $stage - a valid PHP mongo pipeline stage
      * @return Builder
      */
-    public function addStage(array $stage) {
+    public function addStage(array $stage)
+    {
         $this->pipeline[] = $stage;
         return $this;
     }
@@ -162,8 +172,8 @@ class Builder
     {
         return new LazyCollection(function () {
             yield from $this->connection
-                ->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array'])
-                ->cursor($this->toJson());
+                ->setTypeMap(self::TYPE_MAP)
+                ->cursor($this->toArray());
         });
     }
 
@@ -177,19 +187,45 @@ class Builder
             $projection = array_merge(['_id' => false], array_fill_keys($columns, true));
             $this->project($projection);
         }
-        return collect($this->connection
-            ->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array'])
-            ->select($this->toJson())
+        return collect(
+            $this->connection
+                ->setTypeMap(self::TYPE_MAP)
+                ->select($this->toArray())
         );
     }
 
-    // todo: public function first() to skip ->get()->first()
+    /**
+     * @param int $amount
+     * @return Builder
+     */
+    public function limit(int $amount)
+    {
+        $this->pipeline[] = ["\$limit" => $amount];
+        return $this;
+    }
+
+    /**
+     * @param array $columns
+     * @return mixed
+     */
+    public function first($columns = [])
+    {
+        return $this->limit(1)->get($columns)->first();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return ['pipeline' => $this->getPipeline(), 'options' => $this->getOptions()];
+    }
 
     /**
      * @return false|string
      */
     public function toJson()
     {
-        return json_encode(['pipeline' => $this->getPipeline(), 'options' => $this->getOptions()]);
+        return json_encode($this->toArray());
     }
 }
