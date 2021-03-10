@@ -23,6 +23,16 @@ class Builder
     }
 
     /**
+     * @param $stage array
+     * @return bool|string
+     */
+    private function validateStage(array $stage)
+    {
+        $name = trim(array_key_first($stage), "$");
+        return !method_exists($this, $name) ? false : $name;
+    }
+
+    /**
      * @return Collection
      */
     public function getCollection()
@@ -79,18 +89,22 @@ class Builder
      * Concat an array of stages to the end of the existing pipeline,
      * will ignore any stages not supported by the builder
      * @param array $stages
+     * @return Builder
      */
-    public function addStages(Iterable $stages)
+    public function addStages(Iterable $stages, bool $strict = true)
     {
-        // We don't want to array_merge, we want to go through and add each stage per our builder. We don't know where these came from.
         foreach ($stages as $stage) {
-            if (!empty($stage)) {
-                $stageName = str_replace('$', '', array_keys($stage)[0]);
-                if (method_exists($this, $stageName)) {
-                    $this->{$stageName}($stage["\${$stageName}"]);
-                }
+            if (false === $strict) {
+                $this->addStage($stage);
+                continue;
+            }
+
+            if (true === $strict && $name = $this->validateStage($stage)) {
+                $this->{$name}($stage["$$name"]);
             }
         }
+
+        return $this;
     }
 
     /**
