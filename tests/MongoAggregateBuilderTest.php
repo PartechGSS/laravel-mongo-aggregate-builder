@@ -115,7 +115,7 @@ class MongoAggregateBuilderTest extends TestCase
                 ]
             ]
         ];
-        $this->builder->addStages($stages);
+        $builder = $this->builder->addStages($stages);
         $this->assertEquals(
             [
                 [
@@ -139,6 +139,8 @@ class MongoAggregateBuilderTest extends TestCase
             ],
             $this->builder->getPipeline()
         );
+
+        $this->assertInstanceOf(Builder::class, $builder);
     }
 
     public function testCanSetAndGetOptions()
@@ -199,6 +201,18 @@ class MongoAggregateBuilderTest extends TestCase
         $this->assertEquals(
             ['$limit' => 1],
             $pipeline[count($pipeline) - 1]
+        );
+    }
+
+    public function testCanDisableStrictModeOnAddStages(): void
+    {
+        $fakeStage = ['$fakeStage' => ["asset_id" => 1337]];
+        $this->builder->addStages([$fakeStage], false);
+        $pipeline = $this->builder->getPipeline();
+
+        $this->assertEquals(
+            [$fakeStage],
+            $pipeline
         );
     }
 }
