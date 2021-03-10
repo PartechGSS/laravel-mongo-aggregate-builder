@@ -115,7 +115,7 @@ class MongoAggregateBuilderTest extends TestCase
                 ]
             ]
         ];
-        $this->builder->addStages($stages);
+        $builder = $this->builder->addStages($stages);
         $this->assertEquals(
             [
                 [
@@ -139,6 +139,8 @@ class MongoAggregateBuilderTest extends TestCase
             ],
             $this->builder->getPipeline()
         );
+
+        $this->assertInstanceOf(Builder::class, $builder);
     }
 
     public function testCanSetAndGetOptions()
