@@ -201,4 +201,16 @@ class MongoAggregateBuilderTest extends TestCase
             $pipeline[count($pipeline) - 1]
         );
     }
+
+    public function testCanDisableStrictModeOnAddStages(): void
+    {
+        $fakeStage = ['$fakeStage' => ["asset_id" => 1337]];
+        $this->builder->addStages([$fakeStage], false);
+        $pipeline = $this->builder->getPipeline();
+
+        $this->assertEquals(
+            [$fakeStage],
+            $pipeline
+        );
+    }
 }
