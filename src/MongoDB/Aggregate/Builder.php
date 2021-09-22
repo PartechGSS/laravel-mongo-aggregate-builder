@@ -76,21 +76,15 @@ class Builder
     }
 
     /**
-     * Concat an array of stages to the end of the existing pipeline,
-     * will ignore any stages not supported by the builder
+     * Concat an array of stages to the end of the existing pipeline
      * @param array $stages
      */
     public function addStages(Iterable $stages)
     {
-        // We don't want to array_merge, we want to go through and add each stage per our builder. We don't know where these came from.
         foreach ($stages as $stage) {
-            if (!empty($stage)) {
-                $stageName = str_replace('$', '', array_keys($stage)[0]);
-                if (method_exists($this, $stageName)) {
-                    $this->{$stageName}($stage["\${$stageName}"]);
-                }
-            }
+            $this->addStage($stage);
         }
+        return $this;
     }
 
     /**
