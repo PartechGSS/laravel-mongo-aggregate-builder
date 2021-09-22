@@ -10,9 +10,9 @@
     }
   },
   "require": {
-    "illuminate/database": "~6.0",
-    "mongodb/mongodb": "~1.6",
-    "php": "~7.3"
+    "illuminate/database": ">=6.0",
+    "mongodb/mongodb": ">=1.6",
+    "php": "~7.3|^8.0"
   },
   "autoload-dev": {
    "classmap": [
