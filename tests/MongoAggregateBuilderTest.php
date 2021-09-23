@@ -115,30 +115,40 @@ class MongoAggregateBuilderTest extends TestCase
                 ]
             ]
         ];
-        $this->builder->addStages($stages);
-        $this->assertEquals(
+        try {
+            $this->builder->addStages($stages);
+        } catch (\MongoDB\Exception\InvalidArgumentException $iae) {
+            $this->assertEquals("\$find is not a supported aggregate stage.", $iae->getMessage());
+        }
+
+        $this->assertEquals([], $this->builder->getPipeline());
+    }
+
+    public function testCanAddRawStages()
+    {
+        $stages = [
             [
-                [
-                    '$match' => [
-                        'organization_id' => 1,
-                        'asset_id' => [
-                            '$in' => [
-                                4,
-                                5,
-                                6,
-                            ],
+                '$match' => [
+                    'organization_id' => 1,
+                    'asset_id' => [
+                        '$in' => [
+                            4,
+                            5,
+                            6,
                         ],
-                    ]
-                ],
-                [
-                    '$project' => [
-                        '_id' => false,
-                        'asset_id' => true,
-                    ]
+                    ],
                 ]
             ],
-            $this->builder->getPipeline()
-        );
+            ['$find' => 'is not a legal aggregate pipeline stage'],
+            [
+                '$project' => [
+                    '_id' => false,
+                    'asset_id' => true,
+                ]
+            ]
+        ];
+        $this->builder->addRawStages($stages);
+        $this->assertEquals($stages, $this->builder->getPipeline());
     }
 
     public function testCanSetAndGetOptions()
