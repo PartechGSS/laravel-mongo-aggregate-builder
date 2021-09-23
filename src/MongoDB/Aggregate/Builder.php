@@ -79,16 +79,21 @@ class Builder
      * Concat an array of stages to the end of the existing pipeline,
      * will ignore any stages not supported by the builder
      * @param array $stages
+     * @throws \MongoDB\Exception\InvalidArgumentException
      */
     public function addStages(iterable $stages)
     {
+        $original = $this->pipeline;
         // We don't want to array_merge, we want to go through and add each stage per our builder. We don't know where these came from.
         foreach ($stages as $stage) {
-            if (!empty($stage)) {
-                $stageName = str_replace('$', '', array_keys($stage)[0]);
-                if (method_exists($this, $stageName)) {
-                    $this->{$stageName}($stage["\${$stageName}"]);
-                }
+            $stageName = str_replace('$', '', array_keys($stage)[0]);
+            if (method_exists($this, $stageName)) {
+                $this->{$stageName}($stage["\${$stageName}"]);
+            } else {
+                $this->pipeline = $original;
+                throw new \MongoDB\Exception\InvalidArgumentException(
+                    "\$$stageName is not a supported aggregate stage."
+                );
             }
         }
         return $this;
@@ -98,7 +103,7 @@ class Builder
      * Concat an array of stages to the end of the existing pipeline as is
      * @param array $stages
      */
-    public function addRawStages(Iterable $stages)
+    public function addRawStages(iterable $stages)
     {
         foreach ($stages as $stage) {
             $this->addStage($stage);
