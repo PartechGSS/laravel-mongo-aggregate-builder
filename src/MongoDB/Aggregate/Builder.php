@@ -76,10 +76,29 @@ class Builder
     }
 
     /**
-     * Concat an array of stages to the end of the existing pipeline
+     * Concat an array of stages to the end of the existing pipeline,
+     * will ignore any stages not supported by the builder
      * @param array $stages
      */
-    public function addStages(Iterable $stages)
+    public function addStages(iterable $stages)
+    {
+        // We don't want to array_merge, we want to go through and add each stage per our builder. We don't know where these came from.
+        foreach ($stages as $stage) {
+            if (!empty($stage)) {
+                $stageName = str_replace('$', '', array_keys($stage)[0]);
+                if (method_exists($this, $stageName)) {
+                    $this->{$stageName}($stage["\${$stageName}"]);
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Concat an array of stages to the end of the existing pipeline as is
+     * @param array $stages
+     */
+    public function addRawStages(Iterable $stages)
     {
         foreach ($stages as $stage) {
             $this->addStage($stage);
@@ -91,7 +110,7 @@ class Builder
      * @param array $stage - <code>[ $query_array ]</code>
      * @return Builder
      */
-    public function match(Iterable $stage): Builder
+    public function match(iterable $stage): Builder
     {
         $this->pipeline[] = ['$match' => $stage];
         return $this;
@@ -107,7 +126,7 @@ class Builder
      * </code>
      * @return Builder
      */
-    public function group(Iterable $stage): Builder
+    public function group(iterable $stage): Builder
     {
         $this->pipeline[] = ['$group' => $stage];
         return $this;
@@ -117,7 +136,7 @@ class Builder
      * @param array $stage - <code>[ $projection_specifications ]</code>
      * @return Builder
      */
-    public function project(Iterable $stage): Builder
+    public function project(iterable $stage): Builder
     {
         $this->pipeline[] = ['$project' => $stage];
         return $this;
@@ -132,7 +151,7 @@ class Builder
      * </code>
      * @return Builder
      */
-    public function set(Iterable $stage): Builder
+    public function set(iterable $stage): Builder
     {
         $this->pipeline[] = ['$set' => $stage];
         return $this;

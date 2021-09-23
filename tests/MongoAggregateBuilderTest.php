@@ -116,6 +116,55 @@ class MongoAggregateBuilderTest extends TestCase
             ]
         ];
         $this->builder->addStages($stages);
+        $this->assertEquals(
+            [
+                [
+                    '$match' => [
+                        'organization_id' => 1,
+                        'asset_id' => [
+                            '$in' => [
+                                4,
+                                5,
+                                6,
+                            ],
+                        ],
+                    ]
+                ],
+                [
+                    '$project' => [
+                        '_id' => false,
+                        'asset_id' => true,
+                    ]
+                ]
+            ],
+            $this->builder->getPipeline()
+        );
+    }
+
+    public function testCanAddRawStages()
+    {
+        $stages = [
+            [
+                '$match' => [
+                    'organization_id' => 1,
+                    'asset_id' => [
+                        '$in' => [
+                            4,
+                            5,
+                            6,
+                        ],
+                    ],
+                ]
+            ],
+            ['$find' => 'is not a legal aggregate pipeline stage'],
+            [
+                '$project' => [
+                    '_id' => false,
+                    'asset_id' => true,
+                ]
+            ]
+        ];
+        $this->builder->addRawStages($stages);
         $this->assertEquals($stages, $this->builder->getPipeline()
         );
     }
