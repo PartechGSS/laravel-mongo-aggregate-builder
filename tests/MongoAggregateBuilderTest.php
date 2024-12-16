@@ -1,6 +1,8 @@
 <?php
 
 use MongoDB\Client;
+use PHPUnit\Framework\Assert as A;
+
 use PartechGSS\MongoDB\Connection;
 use PartechGSS\MongoDB\Aggregate\Builder;
 
@@ -210,5 +212,72 @@ class MongoAggregateBuilderTest extends TestCase
             ['$limit' => 1],
             $pipeline[count($pipeline) - 1]
         );
+    }
+
+    public function testChunksAsExpected(): void
+    {
+        /**
+         * A dummy cursor returning a 3-item list.
+         */
+        $dummy_cursor = new class implements Iterator
+        {
+            function setTypeMap($map)
+            {
+            }
+
+            public function __construct(array $data = [])
+            {
+                $this->data = [1, 2, 3];
+                $this->position = 0;
+            }
+
+            public function current()
+            {
+                return $this->data[$this->position];
+            }
+
+            public function key()
+            {
+                return $this->position;
+            }
+
+            public function next()
+            {
+                ++$this->position;
+            }
+
+            public function rewind()
+            {
+                $this->position = 0;
+            }
+
+            public function valid()
+            {
+                return isset($this->data[$this->position]);
+            }
+        };
+
+        // Return the dummy cursor from the Mongo search.
+        $collection = $this->createMock(MongoDB\Collection::class);
+        $collection->method('aggregate')->willReturnCallback(function ($params) use ($dummy_cursor) {
+            return $dummy_cursor;
+        });
+        $client = $this->createMock(MongoDB\Client::class);
+        $database = $this->createMock(MongoDB\Database::class);
+        $database->method('selectCollection')->willReturn($collection);
+        $client->method('selectDatabase')->willReturn($database);
+        $connection = new Connection($client, "ahahahah", "nooooo");
+
+        // Call chunk() on the search results with a callback we can spy on.
+        $callback = Mockery::mock();
+        $callback->shouldReceive('__invoke')
+            ->twice();
+        $callableMock = function (...$args) use ($callback) {
+            A::assertInstanceOf(\Illuminate\Support\LazyCollection::class, $args[0]);
+            A::assertLessThanOrEqual(2, $args[0]->count());
+            return $callback->__invoke(...$args);
+        };
+        $builder = new Builder("breakfasts", $connection);
+        $builder->chunk(2, $callableMock);
     }
 }

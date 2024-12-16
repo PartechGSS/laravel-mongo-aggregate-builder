@@ -184,6 +184,16 @@ class Builder
     // TODO: Other aggregate pipeline stages
 
     /**
+     * Pull `$chunkSize` records and pass them to `$callback`.
+     * @param $chunkSize
+     * @param callable $callback
+     * @return Builder
+     */
+    public function chunk($chunkSize, callable $callback) {
+        return $this->cursor()->chunk($chunkSize)->each($callback);
+    }
+
+    /**
      * @return LazyCollection
      */
     public function cursor()
